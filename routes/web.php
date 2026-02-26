@@ -23,4 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/colocations/{colocation}', [ColocationController::class, 'show'])->name('colocations.show');
 });
 
+Route::get('/colocations/join/{token}', [ColocationController::class, 'joinByToken'])->name('colocations.join');
+Route::post('/colocations/invite', [ColocationController::class, 'invite'])->name('colocations.invite');
+
 require __DIR__.'/auth.php';
