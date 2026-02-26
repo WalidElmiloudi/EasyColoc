@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('title','Login')
 
@@ -23,7 +23,8 @@
       <p class="text-slate-500 text-sm mb-8">Connecte‑toi pour accéder aux dépenses et équilibrer les comptes.</p>
 
       <!-- login form -->
-      <form class="space-y-5">
+      <form class="space-y-5" action="{{ route('login') }}" method="post">
+        @csrf
         <!-- email field -->
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">E-mail</label>
@@ -33,7 +34,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
               </svg>
             </div>
-            <input type="email" placeholder="coloc@exemple.fr" class="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 outline-none transition" required>
+            <input type="email" name="email" placeholder="coloc@exemple.fr" class="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 outline-none transition" required>
           </div>
         </div>
 
@@ -46,11 +47,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
               </svg>
             </div>
-            <input type="password" placeholder="··········" class="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 outline-none transition" required>
+            <input type="password" name="password" placeholder="··········" class="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 outline-none transition" required>
           </div>
-          <div class="flex justify-end mt-2">
+          {{-- <div class="flex justify-end mt-2">
             <a href="#" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium hover:underline underline-offset-2">Mot de passe oublié ?</a>
-          </div>
+          </div> --}}
         </div>
 
         <!-- submit button -->
