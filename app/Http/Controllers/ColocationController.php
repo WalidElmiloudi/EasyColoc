@@ -77,7 +77,7 @@ class ColocationController extends Controller
             'token' => $token,
         ]);
 
-        \Mail::to($request->email)->send(new \App\Mail\ColocationInvite($invitation));
+        Mail::to($request->email)->send(new \App\Mail\ColocationInvite($invitation));
 
         return back()->with('success', 'Invitation sent!');
     }

@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\View\View;
 
 class ColocationInvite extends Mailable
 {
@@ -20,19 +21,13 @@ class ColocationInvite extends Mailable
         $this->invitation = $invitation;
     }
 
-    public function build()
-    {
-        return $this->subject('You are invited to join a Colocation!')
-                ->view('emails.colocation-invite');
-    }
-
     /**
      * Get the message envelope.
      */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Colocation Invite',
+            subject: 'You are invited to join a Colocation!',
         );
     }
 
@@ -42,7 +37,7 @@ class ColocationInvite extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.colocation-invite',
         );
     }
 
