@@ -1,16 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EasyColoc · Connexion</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Inter', system-ui, sans-serif; }
-  </style>
-</head>
-<body class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-indigo-100 flex items-center justify-center p-5">
+@extends('layouts.app')
+
+@section('title','Login')
+
+@section('content')
 
   <!-- LOGIN PAGE (unique card) -->
   <div class="w-full max-w-md">
@@ -74,7 +66,7 @@
       <div class="mt-8 text-center border-t border-slate-200 pt-6">
         <p class="text-slate-600 text-sm">
           Pas encore de compte ?
-          <a href="easycoloc-signup.html" class="ml-1 font-semibold text-indigo-600 hover:text-indigo-700 hover:underline underline-offset-2">Inscris‑toi →</a>
+          <a href="{{ route('register') }}" class="ml-1 font-semibold text-indigo-600 hover:text-indigo-700 hover:underline underline-offset-2">Inscris‑toi →</a>
         </p>
         <!-- note: the signup page will be separate (same folder) -->
       </div>
@@ -83,7 +75,4 @@
       <p class="text-xs text-slate-400 text-center mt-5">Dépenses communes • répartition automatique</p>
     </div>
   </div>
-
-  <!-- simple explanation: this is the LOGIN page. Signup is a separate page (easycoloc-signup.html) -->
-</body>
-</html>
+@endsection
