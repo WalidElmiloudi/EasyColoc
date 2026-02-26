@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/colocations', [ColocationController::class, 'store'])->name('colocations');
+    Route::get('/colocations/{colocation}', [ColocationController::class, 'show'])->name('colocations.show');
 });
 
 require __DIR__.'/auth.php';

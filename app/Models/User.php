@@ -47,10 +47,8 @@ class User extends Authenticatable
         ];
     }
 
-    public function colocations()
+    public function colocation()
     {
-        return $this->belongsToMany(Colocation::class)
-                ->withPivot('role')
-                ->withTimestamps();
+        return $this->belongsTo(Colocation::class);
     }
 }

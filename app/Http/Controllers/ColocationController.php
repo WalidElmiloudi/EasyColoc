@@ -2,18 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\Colocation;
+use Illuminate\View\View;
 
 class ColocationController extends Controller
 {
-    public function store(Request $request)
+    public function show(Colocation $colocation): View
+    {
+        return view('pages.colocation',compact('colocation'));
+    }
+
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255'
         ]);
         
-        if (auth()->user()->colocations()->exists()) {
+        if (auth()->user()->colocation()->exists()) {
             return back()->withErrors('You are already in a colocation.');
         }
 
@@ -22,10 +29,10 @@ class ColocationController extends Controller
             'owner_id' => auth()->id()
         ]);
 
-        $colocation->users()->attach(auth()->id(), [
-            'role' => 'owner'
+        auth()->user()->update([
+            'colocation_id' => $colocation->id,
+            'colocation_role' => 'owner',
         ]);
-
-        return redirect()->back();
+        return redirect()->route('colocations.show',$colocation);
 }
 }

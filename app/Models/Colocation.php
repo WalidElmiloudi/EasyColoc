@@ -15,8 +15,6 @@ class Colocation extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class)
-                    ->withPivot('role')
-                    ->withTimestamps();
+        return $this->hasMany(User::class);
     }
 }
