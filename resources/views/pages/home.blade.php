@@ -166,45 +166,14 @@
                         </p>
 
                         <!-- FORMULAIRE -->
-                        <form id="createColocForm" class="space-y-4">
+                        <form id="createColocForm" class="space-y-4" action="{{ route('colocations') }}" method="post">
+                          @csrf
                             <!-- Nom de la colocation (required) -->
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">
                                     Nom de la colocation <span class="text-red-400">*</span>
                                 </label>
-                                <input type="text" placeholder="ex : Coloc’ Montreuil" required
-                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-300 outline-none transition">
-                            </div>
-
-                            <!-- Adresse (optionnelle) -->
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">
-                                    Adresse <span class="text-xs text-slate-400">(optionnelle)</span>
-                                </label>
-                                <input type="text" placeholder="123 rue exemple, 75000 Paris"
-                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-300 outline-none transition">
-                            </div>
-
-                            <!-- Surface & Loyer -->
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Surface (m²)</label>
-                                    <input type="number" placeholder="75"
-                                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-300 outline-none transition">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Loyer (€)</label>
-                                    <input type="number" placeholder="1200"
-                                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-300 outline-none transition">
-                                </div>
-                            </div>
-
-                            <!-- Nombre max de colocataires -->
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">
-                                    Nombre max de colocataires <span class="text-xs text-slate-400">(optionnel)</span>
-                                </label>
-                                <input type="number" placeholder="ex: 4"
+                                <input type="text" name="name" placeholder="ex : Coloc’ Montreuil" required
                                     class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-300 outline-none transition">
                             </div>
 
@@ -273,14 +242,6 @@
         if (e.target === modal) {
           closeModal();
         }
-      });
-
-      // Intercepter la soumission du formulaire (pour l'exemple)
-      form.addEventListener('submit', function(e) {
-        e.preventDefault(); // dans la réalité, envoyer les données
-        alert('Colocation créée (simulation) !');
-        closeModal();
-        // Ici tu pourrais rediriger vers la nouvelle page de colocation
       });
 
       // Nettoyage au cas où la modale serait ouverte par défaut (non, elle a class hidden)
