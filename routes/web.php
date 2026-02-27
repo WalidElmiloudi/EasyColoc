@@ -35,6 +35,7 @@ Route::post('/join',
 
 Route::middleware('auth')->group(function() {
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
 
 require __DIR__.'/auth.php';

@@ -17,4 +17,9 @@ class Colocation extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
 }
