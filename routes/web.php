@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ColocationController;
+use App\Http\Controllers\ExpenceController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,7 @@ Route::post('/join',
 Route::middleware('auth')->group(function() {
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
     Route::get('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::get('/expences',[ExpenceController::class,'show'])->name('expences.show');
 });
 
 require __DIR__.'/auth.php';
