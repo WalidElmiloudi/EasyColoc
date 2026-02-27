@@ -25,7 +25,7 @@
                         <span class="text-xs text-slate-500">{{ auth()->user()->email }}</span>
                         <!-- badge : admin / member (dynamic look) -->
                         <span
-                            class="bg-amber-100 text-amber-700 text-[10px] font-medium px-2 py-0.5 rounded-full border border-amber-200">admin</span>
+                            class="bg-amber-100 text-amber-700 text-[10px] font-medium px-2 py-0.5 rounded-full border border-amber-200">{{ auth()->user()->role }}</span>
                     </div>
                 </div>
             </div>

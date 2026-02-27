@@ -48,7 +48,7 @@
                             </svg>
                             <span>Créer une colocation</span>
                         </button>
-                        <button
+                        <button id="openJoinModalBtn"
                             class="bg-white border border-slate-200 hover:border-indigo-300 text-slate-700 font-medium px-6 py-3.5 rounded-xl shadow-sm flex items-center gap-2 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
                                 stroke="currentColor" class="w-5 h-5">
@@ -86,11 +86,12 @@
                             <div class="flex justify-between border-b border-slate-100 pb-2">
                                 <span class="text-slate-500">Rôle</span>
                                 <span
-                                    class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full">{{Str::ucfirst(auth()->user()->role)}}</span>
+                                    class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full">{{ Str::ucfirst(auth()->user()->role) }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-slate-500">Membre depuis</span>
-                                <span class="font-medium text-slate-800">{{ auth()->user()->created_at->format('M Y') }}</span>
+                                <span
+                                    class="font-medium text-slate-800">{{ auth()->user()->created_at->format('M Y') }}</span>
                             </div>
                         </div>
                         <!-- small edit link inside card -->
@@ -137,6 +138,7 @@
                     </div>
                 </div>
             </div>
+
             <div id="createColocModal"
                 class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
                 <!-- MODAL PANEL -->
@@ -152,7 +154,7 @@
                                 Créer une colocation
                             </h3>
                             <!-- bouton fermer (X) -->
-                            <button id="closeModalBtn" class="text-slate-400 hover:text-slate-600 transition">
+                            <button id="closeCreateModalBtn" class="text-slate-400 hover:text-slate-600 transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="2" stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -167,7 +169,7 @@
 
                         <!-- FORMULAIRE -->
                         <form id="createColocForm" class="space-y-4" action="{{ route('colocations') }}" method="post">
-                          @csrf
+                            @csrf
                             <!-- Nom de la colocation (required) -->
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">
@@ -208,47 +210,147 @@
                 </div>
             </div>
 
+            <div id="joinColocModal"
+                class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+                <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-white/30">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.8" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                                </svg>
+                                Rejoindre avec un code
+                            </h3>
+                            <button id="closeJoinModalBtn" class="text-slate-400 hover:text-slate-600 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="text-sm text-slate-500 mb-5">Entre le code d'invitation que tu as reçu pour rejoindre une
+                            colocation existante.</p>
+                        <form id="joinColocForm" class="space-y-5"  method="POST" action="{{ route('colocations.join') }}">
+                            @csrf
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Code d'invitation <span
+                                        class="text-red-400">*</span></label>
+                                <input type="text" name="token" placeholder="ex: XXXXXX" required
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-300 outline-none transition text-center font-mono text-lg uppercase">
+                            </div>
+                            <div
+                                class="bg-indigo-50/70 p-3 rounded-lg border border-indigo-100 text-xs text-indigo-700 flex items-start gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="2" stroke="currentColor" class="w-4 h-4 mt-0.5 shrink-0">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                                </svg>
+                                <span>En rejoignant, tu auras accès aux dépenses et aux membres de cette colocation.</span>
+                            </div>
+                            <div class="flex gap-3 pt-3">
+                                <button type="submit"
+                                    class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-xl shadow-sm transition">Rejoindre</button>
+                                <button type="button" id="cancelJoinModalBtn"
+                                    class="flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium py-2.5 px-4 rounded-xl transition">Annuler</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
-      <script>
-    (function() {
-      // Récupération des éléments
-      const openBtn = document.getElementById('openCreateModalBtn');
-      const modal = document.getElementById('createColocModal');
-      const closeBtn = document.getElementById('closeModalBtn');
-      const cancelBtn = document.getElementById('cancelModalBtn');
-      const form = document.getElementById('createColocForm');
+    <script>
+        (function() {
+            // ----- CREATE MODAL ELEMENTS -----
+            const openCreateBtn = document.getElementById('openCreateModalBtn');
+            const createModal = document.getElementById('createColocModal');
+            const closeCreateBtn = document.getElementById('closeCreateModalBtn');
+            const cancelCreateBtn = document.getElementById('cancelCreateModalBtn');
+            const createForm = document.getElementById('createColocForm');
 
-      // Ouvrir la modale
-      openBtn.addEventListener('click', function() {
-        modal.classList.remove('hidden');
-        // optionnel : empêcher le scroll de l'arrière-plan
-        document.body.style.overflow = 'hidden';
-      });
+            // ----- JOIN MODAL ELEMENTS -----
+            const openJoinBtn = document.getElementById('openJoinModalBtn');
+            const joinModal = document.getElementById('joinColocModal');
+            const closeJoinBtn = document.getElementById('closeJoinModalBtn');
+            const cancelJoinBtn = document.getElementById('cancelJoinModalBtn');
+            const joinForm = document.getElementById('joinColocForm');
 
-      // Fonction pour fermer la modale
-      function closeModal() {
-        modal.classList.add('hidden');
-        document.body.style.overflow = ''; // restaurer le scroll
-      }
+            // Helper to close any modal and remove body class
+            function closeModal(modal) {
+                if (modal) modal.classList.add('hidden');
+                // if both hidden, remove body class
+                if (createModal.classList.contains('hidden') && joinModal.classList.contains('hidden')) {
+                    document.body.classList.remove('modal-open');
+                }
+            }
 
-      // Fermer avec le X
-      closeBtn.addEventListener('click', closeModal);
-      // Fermer avec le bouton Annuler
-      cancelBtn.addEventListener('click', closeModal);
+            function openModal(modal) {
+                // close the other modal first if open (optional)
+                if (modal === createModal) {
+                    joinModal.classList.add('hidden');
+                } else if (modal === joinModal) {
+                    createModal.classList.add('hidden');
+                }
+                modal.classList.remove('hidden');
+                document.body.classList.add('modal-open');
+            }
 
-      // Fermer en cliquant sur le fond (backdrop)
-      modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-          closeModal();
-        }
-      });
+            // ----- CREATE MODAL LISTENERS -----
+            if (openCreateBtn) {
+                openCreateBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openModal(createModal);
+                });
+            }
+            if (closeCreateBtn) {
+                closeCreateBtn.addEventListener('click', function() {
+                    closeModal(createModal);
+                });
+            }
+            if (cancelCreateBtn) {
+                cancelCreateBtn.addEventListener('click', function() {
+                    closeModal(createModal);
+                });
+            }
 
-      // Nettoyage au cas où la modale serait ouverte par défaut (non, elle a class hidden)
-      // mais on s'assure que le scroll est actif au load
-      window.addEventListener('load', function() {
-        document.body.style.overflow = '';
-      });
-    })();
-  </script>
+            // ----- JOIN MODAL LISTENERS -----
+            if (openJoinBtn) {
+                openJoinBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openModal(joinModal);
+                });
+            }
+            if (closeJoinBtn) {
+                closeJoinBtn.addEventListener('click', function() {
+                    closeModal(joinModal);
+                });
+            }
+            if (cancelJoinBtn) {
+                cancelJoinBtn.addEventListener('click', function() {
+                    closeModal(joinModal);
+                });
+            }
+
+
+            // Click outside backdrop to close either modal
+            window.addEventListener('click', function(e) {
+                if (e.target === createModal) {
+                    closeModal(createModal);
+                }
+                if (e.target === joinModal) {
+                    closeModal(joinModal);
+                }
+            });
+
+            // ensure body class is removed on page load if any modal accidentally visible
+            window.addEventListener('load', function() {
+                createModal.classList.add('hidden');
+                joinModal.classList.add('hidden');
+                document.body.classList.remove('modal-open');
+            });
+        })();
+    </script>
 @endsection

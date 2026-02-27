@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ColocationController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,9 +22,19 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/colocations', [ColocationController::class, 'store'])->name('colocations');
     Route::get('/colocations/{colocation}', [ColocationController::class, 'show'])->name('colocations.show');
+    Route::post('/colocations/invite', [ColocationController::class, 'invite'])->name('colocations.invite');
 });
 
-Route::get('/colocations/join/{token}', [ColocationController::class, 'joinByToken'])->name('colocations.join');
-Route::post('/colocations/invite', [ColocationController::class, 'invite'])->name('colocations.invite');
+Route::get('/invitations/{token}', 
+    [ColocationController::class, 'joinWithInvitation']
+)->name('invitations.accept')->middleware('auth');
+
+Route::post('/join', 
+    [ColocationController::class, 'joinWithJoinToken']
+)->name('colocations.join')->middleware('auth');
+
+Route::middleware('auth')->group(function() {
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+});
 
 require __DIR__.'/auth.php';
