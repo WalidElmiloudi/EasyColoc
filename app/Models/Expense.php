@@ -15,6 +15,10 @@ class Expense extends Model
         'expense_date',
     ];
 
+    protected $casts = [
+        'expense_date' => 'date',
+    ];
+
     public function colocation()
     {
         return $this->belongsTo(Colocation::class);

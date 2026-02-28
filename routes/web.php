@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function() {
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
     Route::get('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     Route::get('/expences',[ExpenceController::class,'show'])->name('expences.show');
+    Route::post('/expences',[ExpenceController::class,'store'])->name('expences.store');
 });
 
 require __DIR__.'/auth.php';
