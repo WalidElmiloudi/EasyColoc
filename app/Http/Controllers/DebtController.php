@@ -9,11 +9,25 @@ class DebtController extends Controller
 {
     public function show()
     {
+        $user = auth()->user();
         $colocation = auth()->user()->colocation;
 
         $debts = $colocation->debts()->where('is_paid', false)->get();
 
-        return view('pages.debt', compact('debts'));
+        $totalOwedToMe = Debt::where('colocation_id', $colocation->id)
+            ->where('to_user_id', $user->id)
+            ->where('is_paid', false)
+            ->sum('amount');
+
+        $totalIOwe = Debt::where('colocation_id', $colocation->id)
+            ->where('from_user_id', $user->id)
+            ->where('is_paid', false)
+            ->sum('amount');
+
+        $balance = $totalOwedToMe - $totalIOwe;
+
+
+        return view('pages.debt', compact('debts', 'balance'));
     }
 
     public function markAsPaid(Debt $debt)

@@ -16,19 +16,19 @@
                 <div
                     class="mt-4 sm:mt-0 bg-white rounded-full border border-slate-200 shadow-sm px-5 py-2.5 flex items-center gap-3">
                     <span class="text-sm text-slate-600">Ton solde:</span>
-                    {{-- @if ($userBalance > 0)
+                    @if ($balance > 0)
                         <p class="tfont-semibold text-emerald-600">
-                            + {{ number_format($userBalance, 2) }} MAD
+                            + {{ number_format($balance, 2) }} MAD
                         </p>
-                    @elseif ($userBalance < 0)
+                    @elseif ($balance < 0)
                         <p class="font-semibold text-red-600">
-                            - {{ number_format(abs($userBalance), 2) }} MAD
+                            - {{ number_format(abs($balance), 2) }} MAD
                         </p>
                     @else
                         <p class="font-semibold text-gray-600">
                             0.00 MAD
                         </p>
-                    @endif --}}
+                    @endif
                 </div>
             </div>
 
