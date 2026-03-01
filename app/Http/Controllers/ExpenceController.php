@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\FilterExpensesRequest;
+use App\Http\Requests\StoreExpenseRequest;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -12,7 +14,7 @@ use App\Models\Debt;
 class ExpenceController extends Controller
 {
 
-    public function show(Request $request): View
+    public function show(FilterExpensesRequest $request): View
     {
         $colocation = auth()->user()->colocation;
 
@@ -23,7 +25,7 @@ class ExpenceController extends Controller
 
         // 🔎 Filter by month if selected
         if ($request->filled('month')) {
-            $date = Carbon::createFromFormat('Y-m', $request->month);
+            $date = Carbon::createFromFormat('Y-m', $request->month)->startOfMonth();;
 
             $query->whereYear('expense_date', $date->year)
                 ->whereMonth('expense_date', $date->month);
@@ -46,17 +48,10 @@ class ExpenceController extends Controller
         return view('pages.expences', compact('expenses', 'categories', 'months', 'total'));
     }
 
-    public function store(Request $request)
+    public function store(StoreExpenseRequest $request)
     {
         $user = auth()->user();
         $colocation = $user->colocation;
-
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:0.01',
-            'category_id' => 'required|exists:categories,id',
-            'expense_date' => 'required|date',
-        ]);
 
         $expense = Expense::create([
             'title' => $request->title,

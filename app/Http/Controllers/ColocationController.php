@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreColocationRequest;
+use App\Http\Requests\JoinColocationRequest;
+use App\Http\Requests\InviteColocationRequest;
 use App\Models\Colocation;
 use App\Models\ColocationInvitation;
 use Illuminate\Support\Str;
@@ -23,27 +26,25 @@ class ColocationController extends Controller
         return view('pages.colocation', compact('colocation', 'members', 'categories'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreColocationRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255'
-        ]);
+        $user = auth()->user();
 
-        if (auth()->user()->colocation()->exists()) {
-            return back()->withErrors('You are already in a colocation.');
-        }
+        $joinToken = mt_rand(100000, 999999);
 
-        $colocation = Colocation::create([
+        $colocation = $user->colocation()->create([
             'name' => $request->name,
-            'owner_id' => auth()->id(),
-            'join_token' => strtoupper(Str::random(6)),
+            'join_token' => $joinToken,
+            'owner_id' => $user->id,
         ]);
 
-        auth()->user()->update([
-            'colocation_id' => $colocation->id,
+        $user->update([
             'colocation_role' => 'owner',
+            'colocation_id' => $colocation->id,
         ]);
-        return redirect()->route('colocations.show', $colocation);
+
+        return redirect()->route('colocations.show', $colocation->id)
+            ->with('success', 'Colocation created successfully!');
     }
 
     public function joinWithInvitation($token)
@@ -77,71 +78,39 @@ class ColocationController extends Controller
             ->with('success', 'Invitation accepted successfully!');
     }
 
-    public function joinWithJoinToken(Request $request)
+    public function joinWithJoinToken(JoinColocationRequest $request)
     {
-        $request->validate([
-            'token' => ['required', 'string']
-        ]);
-
         $user = auth()->user();
 
         if ($user->colocation_id) {
             return back()->withErrors('You are already in a colocation.');
         }
 
-        $colocation = Colocation::where('join_token', trim($request->token))
-            ->first();
+        $colocation = Colocation::where('join_token', $request->token)->firstOrFail();
 
-        if (!$colocation) {
-            return back()->withErrors('Invalid join token.');
-        }
-
-        $this->attachUserToColocation($user, $colocation->id);
-
-        return redirect()
-            ->route('colocations.show', $colocation->id)
-            ->with('success', 'You joined successfully!');
-    }
-
-    public function invite(Request $request)
-    {
-        $user = auth()->user();
-
-        if ($user->colocation_role !== 'owner') {
-            abort(403, 'Only the owner can send invitations.');
-        }
-
-        $request->validate([
-            'email' => ['required', 'email'],
+        $user->update([
+            'colocation_id' => $colocation->id,
+            'colocation_role' => 'member',
         ]);
 
+        return redirect()->route('colocations.show', $colocation->id)
+            ->with('success', 'You have joined the colocation successfully!');
+    }
+
+    public function invite(InviteColocationRequest $request)
+    {
+        $user = auth()->user();
         $colocation = $user->colocation;
 
-        $existingUser = User::where('email', $request->email)->first();
-        if ($existingUser && $existingUser->colocation_id) {
-            return back()->withErrors('This user is already in a colocation.');
-        }
+        $token = mt_rand(100000, 999999);
 
-        $alreadyInvited = ColocationInvitation::where('email', $request->email)
-            ->where('colocation_id', $colocation->id)
-            ->whereNull('accepted_at')
-            ->exists();
+        $invitation = ColocationInvitation::create([
+            'colocation_id' => $colocation->id,
+            'email' => $request->email,
+            'token' => $token,
+        ]);
 
-        if ($alreadyInvited) {
-            return back()->withErrors('This email already has a pending invitation.');
-        }
-
-        DB::transaction(function () use ($request, $colocation) {
-
-            $invitation = ColocationInvitation::create([
-                'colocation_id' => $colocation->id,
-                'email' => $request->email,
-                'token' => Str::uuid()
-            ]);
-
-            Mail::to($request->email)
-                ->send(new ColocationInvite($invitation));
-        });
+        Mail::to($request->email)->send(new \App\Mail\ColocationInvite($invitation));
 
         return back()->with('success', 'Invitation sent successfully!');
     }
@@ -197,7 +166,7 @@ class ColocationController extends Controller
 
     public function removeMember($memberId)
     {
-        $member = User::findOrFail($memberId); // now $member is loaded from DB
+        $member = User::findOrFail($memberId);
         $owner = auth()->user();
         $colocation = $owner->colocation;
 
@@ -210,7 +179,6 @@ class ColocationController extends Controller
         }
 
         DB::transaction(function () use ($colocation, $member, $owner) {
-            // reassign debts
             Debt::where('colocation_id', $colocation->id)
                 ->where('is_paid', false)
                 ->where(function ($q) use ($member) {
@@ -224,13 +192,11 @@ class ColocationController extends Controller
                     $debt->save();
                 });
 
-            // delete expenses
             foreach ($member->expenses as $expense) {
                 $expense->debts()->delete();
                 $expense->delete();
             }
 
-            // remove member from colocation
             $member->update([
                 'colocation_id' => null,
                 'colocation_role' => null,
