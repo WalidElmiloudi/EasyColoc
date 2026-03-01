@@ -63,19 +63,38 @@
                 @forelse ($expenses as $expense)
                     <div
                         class="bg-white rounded-xl border border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:shadow-sm transition">
+
                         <div class="flex items-start gap-3">
                             <div>
                                 <p class="font-medium text-slate-800">{{ $expense->title }}</p>
+
                                 <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500 mt-1">
-                                    <span
-                                        class="flex items-center gap-1">{{ $expense->expense_date->format('d M Y') }}</span>
-                                    <span class="flex items-center gap-1">{{ $expense->category->name }}</span>
-                                    <span class="flex items-center gap-1">{{ $expense->user->name }}</span>
+                                    <span>{{ $expense->expense_date->format('d M Y') }}</span>
+                                    <span>{{ $expense->category->name }}</span>
+                                    <span>{{ $expense->user->name }}</span>
                                 </div>
                             </div>
                         </div>
+
                         <div class="flex items-center gap-4 pl-13 sm:pl-0">
-                            <span class="font-semibold text-lg text-slate-800">{{ $expense->amount }} MAD</span>
+
+                            <span class="font-semibold text-lg text-slate-800">
+                                {{ $expense->amount }} MAD
+                            </span>
+
+                            {{-- Delete Button --}}
+                            @if ($expense->user_id === auth()->id())
+                                <form method="POST" action="{{ route('expenses.destroy', $expense) }}"
+                                    onsubmit="return confirm('Are you sure you want to delete this expense?');">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit" class="text-red-600 hover:text-red-700 text-sm font-medium cursor-pointer">
+                                        Delete
+                                    </button>
+                                </form>
+                            @endif
+
                         </div>
                     </div>
                 @empty

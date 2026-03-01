@@ -72,6 +72,7 @@ class ExpenceController extends Controller
 
         foreach ($members as $member) {
             Debt::create([
+                'expense_id' => $expense->id,
                 'from_user_id' => $member->id,
                 'to_user_id' => $user->id,
                 'colocation_id' => $colocation->id,
@@ -84,6 +85,12 @@ class ExpenceController extends Controller
 
     public function destroy(Expense $expense)
     {
+        if ($expense->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         $expense->delete();
+
+        return back()->with('success', 'Expense deleted successfully.');
     }
 }
