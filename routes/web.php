@@ -1,13 +1,18 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ColocationController;
+use App\Http\Controllers\ExpenceController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DebtController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/home', function (){
+Route::get('/home', function () {
     return view('pages.home');
 })->middleware('auth')->name('home');
 
@@ -17,4 +22,42 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+Route::middleware('auth')->group(function () {
+    Route::post('/colocations', [ColocationController::class, 'store'])->name('colocations');
+    Route::get('/colocations/{colocation}', [ColocationController::class, 'show'])->name('colocations.show');
+    Route::post('/colocations/invite', [ColocationController::class, 'invite'])->name('colocations.invite');
+    Route::post('/colocation/leave', [ColocationController::class, 'leave'])->name('colocation.leave');
+    Route::delete('/colocation/members/{user}/remove', [ColocationController::class, 'removeMember'])
+        ->name('colocation.members.remove');
+    Route::post('/colocation/members/{user}/transfer', [ColocationController::class, 'transferOwnership'])
+        ->name('colocation.members.transfer');
+    Route::delete('/colocations/cancel', [ColocationController::class, 'cancelColocation'])
+        ->name('colocations.cancel');
+});
+
+Route::get(
+    '/invitations/{token}',
+    [ColocationController::class, 'joinWithInvitation']
+)->name('invitations.accept')->middleware('auth');
+
+Route::post(
+    '/join',
+    [ColocationController::class, 'joinWithJoinToken']
+)->name('colocations.join')->middleware('auth');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::get('/expences', [ExpenceController::class, 'show'])->name('expences.show');
+    Route::post('/expences', [ExpenceController::class, 'store'])->name('expences.store');
+    Route::delete('/expences/{expense}', [ExpenceController::class, 'destroy'])->name('expenses.destroy');
+    Route::get('/depts', [DebtController::class, 'show'])->name('debts.show');
+    Route::patch('/debts/{debt}/pay', [DebtController::class, 'markAsPaid'])->name('debts.pay');
+});
+
+Route::middleware('auth')->group(function(){
+    Route::get('/admin',[AdminController::class,'show'])->name('admin.show');
+    Route::post('/admin/users/{user}/ban', [AdminController::class, 'toggleBan'])->name('admin.users.ban');
+});
+
+require __DIR__ . '/auth.php';
