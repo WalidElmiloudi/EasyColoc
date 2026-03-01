@@ -23,7 +23,6 @@ class ExpenceController extends Controller
         $query = $colocation->expenses()
             ->with(['user', 'category']);
 
-        // 🔎 Filter by month if selected
         if ($request->filled('month')) {
             $date = Carbon::createFromFormat('Y-m', $request->month)->startOfMonth();;
 

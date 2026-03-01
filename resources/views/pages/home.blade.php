@@ -4,19 +4,15 @@
 
 @section('content')
 
-    <!-- main container with sidebar + content -->
     <div class="flex h-screen overflow-hidden">
         @include('partials.sidebar')
-        <!-- ========== MAIN CONTENT ========== -->
         <main class="flex-1 overflow-y-auto bg-slate-50/80 p-6 md:p-8">
 
-            <!-- top bar with page title & edit profile button -->
             <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
                 <div>
                     <h1 class="text-3xl font-bold text-slate-800">Tableau de bord</h1>
                     <p class="text-sm text-slate-500 mt-1">Bienvenue dans ta colocation, {{ auth()->user()->name }} 👋</p>
                 </div>
-                <!-- EDIT PROFILE BUTTON (access to modify profile) -->
                 <button id="openProfileModalBtn"
                     class="cursor-pointer inline-flex items-center gap-2 bg-white border border-slate-200 hover:border-indigo-300 text-slate-700 font-medium px-5 py-2.5 rounded-xl shadow-sm transition shadow-indigo-100/50">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
@@ -29,7 +25,6 @@
             </div>
 
             @if (!auth()->user()->colocation)
-                <!-- ===== SECTION: CRÉER UNE COLOCATION (if user has no coloc) ===== -->
                 <div class="bg-white rounded-2xl border border-indigo-100 p-6 md:p-8 mb-8 shadow-md shadow-indigo-50/30">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
                         <div>
@@ -64,9 +59,7 @@
                 </div>
             @endif
 
-            <!-- ===== INFOS PERSOS / MEMBRE ===== -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- profile summary card (member infos) -->
                 <div class="lg:col-span-1">
                     <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
                         <h3 class="font-semibold text-slate-700 mb-4 flex items-center gap-1.5">
@@ -113,10 +106,8 @@
 
             <div id="createColocModal"
                 class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-                <!-- MODAL PANEL -->
                 <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-white/30">
                     <div class="p-6">
-                        <!-- HEADER -->
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -125,7 +116,6 @@
                                 </svg>
                                 Créer une colocation
                             </h3>
-                            <!-- bouton fermer (X) -->
                             <button id="closeCreateModalBtn" class="text-slate-400 hover:text-slate-600 transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                     stroke="currentColor" class="w-6 h-6">
@@ -139,10 +129,8 @@
                             ensuite.
                         </p>
 
-                        <!-- FORMULAIRE -->
                         <form id="createColocForm" class="space-y-4" action="{{ route('colocations') }}" method="post">
                             @csrf
-                            <!-- Nom de la colocation (required) -->
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">
                                     Nom de la colocation <span class="text-red-400">*</span>
@@ -151,7 +139,6 @@
                                     class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-300 outline-none transition">
                             </div>
 
-                            <!-- message info -->
                             <div
                                 class="bg-indigo-50/70 p-3 rounded-lg border border-indigo-100 text-xs text-indigo-700 flex items-start gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -162,7 +149,6 @@
                                 <span>Les dépenses et leur répartition se géreront directement dans la colocation.</span>
                             </div>
 
-                            <!-- BOUTONS -->
                             <div class="flex gap-3 pt-3">
                                 <button type="submit"
                                     class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-xl shadow-sm transition">
@@ -235,10 +221,8 @@
 
             <div id="profileModal"
                 class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-                <!-- modal panel -->
                 <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-white/30">
                     <div class="p-6">
-                        <!-- header -->
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -248,7 +232,6 @@
                                 </svg>
                                 Modifier mon profil
                             </h3>
-                            <!-- close button -->
                             <button id="closeModalBtn" class="text-slate-400 hover:text-slate-600 transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="2" stroke="currentColor" class="w-6 h-6">
@@ -258,7 +241,6 @@
                         </div>
                         <p class="text-sm text-slate-500 mb-5">Mets à jour tes informations personnelles.</p>
 
-                        <!-- formulaire de modification du profil -->
                         <form id="profileForm" class="space-y-4" action="{{ route('profile.update') }}" method="post">
                             @csrf
                             @method('patch')
@@ -294,13 +276,11 @@
             const cancelBtn = document.getElementById('cancelModalBtn');
             const form = document.getElementById('profileForm');
 
-            // open modal
             openBtn.addEventListener('click', function() {
                 modal.classList.remove('hidden');
                 document.body.classList.add('modal-open');
             });
 
-            // close functions
             function closeModal() {
                 modal.classList.add('hidden');
                 document.body.classList.remove('modal-open');
@@ -309,45 +289,38 @@
             closeBtn.addEventListener('click', closeModal);
             cancelBtn.addEventListener('click', closeModal);
 
-            // click outside backdrop to close
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
                     closeModal();
                 }
             });
 
-            // ensure modal is hidden on page load
             window.addEventListener('load', function() {
                 modal.classList.add('hidden');
                 document.body.classList.remove('modal-open');
             });
         })();
         (function() {
-            // ----- CREATE MODAL ELEMENTS -----
             const openCreateBtn = document.getElementById('openCreateModalBtn');
             const createModal = document.getElementById('createColocModal');
             const closeCreateBtn = document.getElementById('closeCreateModalBtn');
             const cancelCreateBtn = document.getElementById('cancelCreateModalBtn');
             const createForm = document.getElementById('createColocForm');
 
-            // ----- JOIN MODAL ELEMENTS -----
             const openJoinBtn = document.getElementById('openJoinModalBtn');
             const joinModal = document.getElementById('joinColocModal');
             const closeJoinBtn = document.getElementById('closeJoinModalBtn');
             const cancelJoinBtn = document.getElementById('cancelJoinModalBtn');
             const joinForm = document.getElementById('joinColocForm');
 
-            // Helper to close any modal and remove body class
             function closeModal(modal) {
                 if (modal) modal.classList.add('hidden');
-                // if both hidden, remove body class
                 if (createModal.classList.contains('hidden') && joinModal.classList.contains('hidden')) {
                     document.body.classList.remove('modal-open');
                 }
             }
 
             function openModal(modal) {
-                // close the other modal first if open (optional)
                 if (modal === createModal) {
                     joinModal.classList.add('hidden');
                 } else if (modal === joinModal) {
@@ -357,7 +330,6 @@
                 document.body.classList.add('modal-open');
             }
 
-            // ----- CREATE MODAL LISTENERS -----
             if (openCreateBtn) {
                 openCreateBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -375,7 +347,6 @@
                 });
             }
 
-            // ----- JOIN MODAL LISTENERS -----
             if (openJoinBtn) {
                 openJoinBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -394,7 +365,6 @@
             }
 
 
-            // Click outside backdrop to close either modal
             window.addEventListener('click', function(e) {
                 if (e.target === createModal) {
                     closeModal(createModal);
@@ -404,7 +374,6 @@
                 }
             });
 
-            // ensure body class is removed on page load if any modal accidentally visible
             window.addEventListener('load', function() {
                 createModal.classList.add('hidden');
                 joinModal.classList.add('hidden');
