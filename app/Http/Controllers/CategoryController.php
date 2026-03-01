@@ -21,4 +21,10 @@ class CategoryController extends Controller
 
         return back()->with('success', 'Category created!');
     }
+
+    public function destroy(Category $category)
+    {
+        $category->delete();
+        return redirect()->back();
+    }
 }

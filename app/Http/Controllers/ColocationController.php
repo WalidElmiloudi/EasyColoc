@@ -18,7 +18,8 @@ class ColocationController extends Controller
     public function show(Colocation $colocation): View
     {
         $members = $colocation->users;
-        return view('pages.colocation',compact('colocation','members'));
+        $categories = $colocation->categories;
+        return view('pages.colocation',compact('colocation','members','categories'));
     }
 
     public function store(Request $request): RedirectResponse
