@@ -73,7 +73,7 @@
                   </li>
                   <!-- dettes (common) -->
                   <li>
-                    <a href="#"
+                    <a href="{{ route('debts.show') }}"
                     class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-100 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
                     stroke="currentColor" class="w-5 h-5">

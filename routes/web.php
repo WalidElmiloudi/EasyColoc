@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function() {
     Route::get('/expences',[ExpenceController::class,'show'])->name('expences.show');
     Route::post('/expences',[ExpenceController::class,'store'])->name('expences.store');
     Route::get('/depts',[DebtController::class,'show'])->name('debts.show');
+    Route::patch('/debts/{debt}/pay', [DebtController::class, 'markAsPaid'])->name('debts.pay');
 });
 
 require __DIR__.'/auth.php';

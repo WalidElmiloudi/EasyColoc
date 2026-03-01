@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Colocation extends Model
 {
-    protected $fillable = ['name', 'owner_id','join_token'];
+    protected $fillable = ['name', 'owner_id', 'join_token'];
 
     public function owner()
     {
@@ -26,5 +26,10 @@ class Colocation extends Model
     public function expenses()
     {
         return $this->hasMany(Expense::class);
+    }
+
+    public function debts()
+    {
+        return $this->hasMany(Debt::class);
     }
 }
