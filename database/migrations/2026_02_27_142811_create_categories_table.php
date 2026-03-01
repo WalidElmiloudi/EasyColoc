@@ -14,12 +14,10 @@ return new class extends Migration
             $table->unsignedBigInteger('colocation_id');
             $table->string('name');
             $table->timestamps();
-
             $table->foreign('colocation_id')
                   ->references('id')
                   ->on('colocations')
                   ->onDelete('cascade');
-
             $table->unique(['colocation_id', 'name']);
         });
     }

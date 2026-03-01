@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ColocationController;
 use App\Http\Controllers\ExpenceController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\DeptController;
+use App\Http\Controllers\DebtController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,7 +40,8 @@ Route::middleware('auth')->group(function() {
     Route::get('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     Route::get('/expences',[ExpenceController::class,'show'])->name('expences.show');
     Route::post('/expences',[ExpenceController::class,'store'])->name('expences.store');
-    Route::get('/depts',[DeptController::class,'show'])->name('depts.show');
+    Route::get('/depts',[DebtController::class,'show'])->name('debts.show');
+    Route::patch('/debts/{debt}/pay', [DebtController::class, 'markAsPaid'])->name('debts.pay');
 });
 
 require __DIR__.'/auth.php';
