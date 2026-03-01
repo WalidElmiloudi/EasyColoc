@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
         ->name('colocation.members.remove');
     Route::post('/colocation/members/{user}/transfer', [ColocationController::class, 'transferOwnership'])
         ->name('colocation.members.transfer');
+    Route::delete('/colocations/cancel', [ColocationController::class, 'cancelColocation'])
+        ->name('colocations.cancel');
 });
 
 Route::get(

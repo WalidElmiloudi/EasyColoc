@@ -23,8 +23,7 @@
                         Gère la colocation, les membres, les catégories de dépenses et les invitations.
                     </p>
                 </div>
-
-                <!-- Right side (token + leave button) -->
+                <!-- Right side (token + leave/cancel button) -->
                 <div class="mt-4 sm:mt-0 flex items-center gap-3">
 
                     <!-- Join Token -->
@@ -36,15 +35,29 @@
                     </div>
 
                     <!-- Leave Button -->
-                    <form method="POST" action="{{ route('colocation.leave') }}"
-                        onsubmit="return confirm('Are you sure you want to leave this colocation?');">
-                        @csrf
+                    @if (auth()->id() !== $colocation->owner_id)
+                        <form method="POST" action="{{ route('colocation.leave') }}"
+                            onsubmit="return confirm('Are you sure you want to leave this colocation?');">
+                            @csrf
+                            <button type="submit"
+                                class="cursor-pointer bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition">
+                                Leave
+                            </button>
+                        </form>
+                    @endif
 
-                        <button type="submit"
-                            class="cursor-pointer bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition">
-                            Leave
-                        </button>
-                    </form>
+                    <!-- Cancel Colocation Button (only owner sees) -->
+                    @if (auth()->id() === $colocation->owner_id)
+                        <form method="POST" action="{{ route('colocations.cancel') }}"
+                            onsubmit="return confirm('Are you sure you want to cancel this colocation? All data will be deleted!');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="cursor-pointer bg-red-800 hover:bg-red-900 text-white px-4 py-2 rounded-xl text-sm font-medium transition">
+                                Cancel Colocation
+                            </button>
+                        </form>
+                    @endif
 
                 </div>
             </div>
@@ -244,8 +257,7 @@
                                                         </button>
                                                     </form>
                                                     <form method="POST"
-                                                        action="{{ route('colocation.members.remove', $member->id) }}"
-                                                        >
+                                                        action="{{ route('colocation.members.remove', $member->id) }}">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit"

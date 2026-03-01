@@ -259,4 +259,29 @@ class ColocationController extends Controller
 
         return back()->with('success', "{$user->name} is now the owner of the colocation.");
     }
+
+    public function cancelColocation()
+    {
+        $owner = auth()->user();
+        $colocation = $owner->colocation;
+
+        if (!$colocation || $owner->id !== $colocation->owner_id) {
+            abort(403, 'Only the owner can cancel the colocation.');
+        }
+
+        DB::transaction(function () use ($colocation) {
+
+            foreach ($colocation->users as $member) {
+                $member->forceFill([
+                    'colocation_id' => null,
+                    'colocation_role' => null,
+                ])->save();
+            }
+
+            $colocation->delete();
+        });
+
+        return redirect()->route('home')
+            ->with('success', 'The colocation has been canceled and all members have been removed.');
+    }
 }
