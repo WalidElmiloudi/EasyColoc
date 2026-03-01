@@ -8,15 +8,12 @@
         @include('partials.sidebar')
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-            <!-- header -->
             <div class="mb-8">
                 <h1 class="text-3xl font-bold text-slate-800">Panneau d'administration</h1>
                 <p class="text-slate-500 mt-1">Gère les utilisateurs, consulte les statistiques et modère les comptes.</p>
             </div>
 
-            <!-- STATISTICS CARDS (4) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-                <!-- card 1: total users -->
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
                     <div class="flex items-center justify-between">
                         <div>
@@ -32,7 +29,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- card 2: active colocations -->
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
                     <div class="flex items-center justify-between">
                         <div>
@@ -49,7 +45,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- card 4: utilisateurs bannis -->
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
                     <div class="flex items-center justify-between">
                         <div>
@@ -67,7 +62,6 @@
                 </div>
             </div>
 
-            <!-- USERS TABLE (with ban/unban actions) -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left">

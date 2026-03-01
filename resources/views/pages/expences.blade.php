@@ -7,7 +7,6 @@
         @include('partials.sidebar')
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-            <!-- header with title and add expense button (opens modal) -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
                 <div>
                     <h1 class="text-3xl font-bold text-slate-800">Dépenses</h1>
@@ -23,7 +22,6 @@
                 </button>
             </div>
 
-            <!-- FILTER BAR: month filter + quick stats -->
             <div
                 class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -58,7 +56,6 @@
                 </div>
             </div>
 
-            <!-- EXPENSES LIST (cards style) -->
             <div class="space-y-3">
                 @forelse ($expenses as $expense)
                     <div
@@ -82,7 +79,6 @@
                                 {{ $expense->amount }} MAD
                             </span>
 
-                            {{-- Delete Button --}}
                             @if ($expense->user_id === auth()->id())
                                 <form method="POST" action="{{ route('expenses.destroy', $expense) }}"
                                     onsubmit="return confirm('Are you sure you want to delete this expense?');">
@@ -102,12 +98,10 @@
                 @endforelse
         </main>
 
-        <!-- ========== MODAL: AJOUTER UNE DÉPENSE ========== -->
         <div id="addExpenseModal"
             class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
             <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-white/30">
                 <div class="p-6">
-                    <!-- header -->
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
@@ -125,7 +119,6 @@
                         </button>
                     </div>
 
-                    <!-- formulaire d'ajout de dépense -->
                     <form id="addExpenseForm" class="space-y-4" action="{{ route('expences.store') }}" method="post">
                         @csrf
                         <div>
@@ -135,7 +128,6 @@
                                 class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-300 outline-none transition">
                         </div>
 
-                        <!-- montant -->
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Montant (MAD) <span
                                     class="text-red-400">*</span></label>
@@ -143,7 +135,6 @@
                                 class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-300 outline-none transition">
                         </div>
 
-                        <!-- catégorie (dropdown) -->
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Catégorie <span
                                     class="text-red-400">*</span></label>
@@ -156,7 +147,6 @@
                             </select>
                         </div>
 
-                        <!-- date -->
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Date <span
                                     class="text-red-400">*</span></label>
@@ -164,7 +154,6 @@
                                 class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-300 outline-none transition">
                         </div>
 
-                        <!-- actions -->
                         <div class="flex gap-3 pt-3">
                             <button type="submit"
                                 class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-xl shadow-sm transition">
@@ -188,13 +177,11 @@
                 const cancelBtn = document.getElementById('cancelAddModalBtn');
                 const form = document.getElementById('addExpenseForm');
 
-                // open modal
                 openBtn.addEventListener('click', function() {
                     modal.classList.remove('hidden');
                     document.body.classList.add('overflow-hidden');
                 });
 
-                // close functions
                 function closeModal() {
                     modal.classList.add('hidden');
                     document.body.classList.remove('overflow-hidden');
@@ -203,14 +190,12 @@
                 closeBtn.addEventListener('click', closeModal);
                 cancelBtn.addEventListener('click', closeModal);
 
-                // click outside backdrop to close
                 modal.addEventListener('click', function(e) {
                     if (e.target === modal) {
                         closeModal();
                     }
                 });
 
-                // ensure no overflow class on load
                 window.addEventListener('load', function() {
                     if (!modal.classList.contains('hidden')) {
                         modal.classList.add('hidden');

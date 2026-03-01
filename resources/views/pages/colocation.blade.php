@@ -3,15 +3,12 @@
 @section('title', 'Colocation')
 
 @section('content')
-    <!-- ========== TOP NAVIGATION ========== -->
 
     <div class="flex h-screen overflow-hidden">
 
         @include('partials.sidebar')
-        <!-- ========== MAIN CONTENT: COLOCATION MANAGEMENT ========== -->
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-            <!-- colocation header with name and owner badge -->
             <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <div class="flex items-center gap-2">
@@ -23,10 +20,8 @@
                         Gère la colocation, les membres, les catégories de dépenses et les invitations.
                     </p>
                 </div>
-                <!-- Right side (token + leave/cancel button) -->
                 <div class="mt-4 sm:mt-0 flex items-center gap-3">
 
-                    <!-- Join Token -->
                     <div class="flex items-center gap-2 bg-indigo-50 p-2 rounded-xl border border-indigo-200">
                         <span
                             class="text-xs font-mono bg-white px-3 py-2 rounded-lg border border-indigo-100 text-indigo-800">
@@ -34,7 +29,6 @@
                         </span>
                     </div>
 
-                    <!-- Leave Button -->
                     @if (auth()->id() !== $colocation->owner_id)
                         <form method="POST" action="{{ route('colocation.leave') }}"
                             onsubmit="return confirm('Are you sure you want to leave this colocation?');">
@@ -46,7 +40,6 @@
                         </form>
                     @endif
 
-                    <!-- Cancel Colocation Button (only owner sees) -->
                     @if (auth()->id() === $colocation->owner_id)
                         <form method="POST" action="{{ route('colocations.cancel') }}"
                             onsubmit="return confirm('Are you sure you want to cancel this colocation? All data will be deleted!');">
@@ -62,14 +55,11 @@
                 </div>
             </div>
 
-            <!-- two column layout: left (categories & invite), right (members) -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                <!-- LEFT LARGE COLUMN: CATEGORIES + INVITATION -->
                 @if ($colocation->owner_id === auth()->user()->id)
                     <div class="lg:col-span-2 space-y-8">
 
-                        <!-- CARD: CATÉGORIES DE DÉPENSES -->
                         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                             <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -84,7 +74,6 @@
                                 dépenses
                                 (ex: courses, loyer, électricité…).</p>
 
-                            <!-- liste des catégories existantes -->
                             <div class="space-y-2 mb-5 max-h-50 overflow-auto [scrollbar-width:none]">
                                 @forelse ($categories as $category)
                                     <div
@@ -109,7 +98,6 @@
                                 @endforelse
                             </div>
 
-                            <!-- formulaire pour ajouter une nouvelle catégorie -->
                             <form action="{{ route('categories.store') }}" method="post">
                                 @csrf
                                 <div class="flex gap-2">
@@ -131,7 +119,6 @@
                                 d'une dépense.</p>
                         </div>
 
-                        <!-- CARD: INVITER DES MEMBRES (token + envoi) -->
                         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                             <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -145,13 +132,11 @@
                                 personnes.
                             </p>
                             <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center mb-4">
-                                <!-- Token display -->
                                 <div id="joinToken"
                                     class="bg-slate-100 px-4 py-3 rounded-xl border border-slate-200 font-mono text-sm w-full sm:w-auto flex-1">
                                     {{ $colocation->join_token }}
                                 </div>
 
-                                <!-- Copy button -->
                                 <button type="button" onclick="copyToken()"
                                     class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2 whitespace-nowrap">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -163,7 +148,6 @@
                                 </button>
                             </div>
 
-                            <!-- envoi par email (simulé) -->
                             <div class="border-t border-slate-200 pt-4">
                                 @if ($errors->any())
                                     <div class="mb-4 rounded-lg bg-red-100 p-3 text-red-700 text-sm">
@@ -191,7 +175,6 @@
                     </div>
                 @endif
 
-                <!-- RIGHT COLUMN: MEMBRES DE LA COLOCATION (avec actions propriétaire) -->
                 @if ($colocation->owner_id === auth()->user()->id)
                     <div class="lg:col-span-1">
                     @else
@@ -207,11 +190,9 @@
                         Membres ({{ $members->count() }})
                     </h2>
                     <div class="h-[90%] overflow-auto [scrollbar-width:none]">
-                        <!-- liste des membres avec rôles et actions -->
                         <ul class="space-y-3">
                             @foreach ($members as $member)
                                 @if ($member->colocation_role === 'owner')
-                                    <!-- proprio (Alex) -->
                                     <li
                                         class="flex items-center justify-between p-3 bg-indigo-50/50 rounded-xl border border-indigo-200">
                                         <div class="flex items-center gap-3">
@@ -293,7 +274,6 @@
 
             navigator.clipboard.writeText(token)
                 .then(() => {
-                    // Optional: temporary feedback
                     console.log('Token copied to clipboard!');
                 })
                 .catch(err => {

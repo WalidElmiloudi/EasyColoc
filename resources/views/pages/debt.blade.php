@@ -34,7 +34,6 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                <!-- LEFT COLUMN (span 2): GLOBAL DEBT MATRIX / WHO OWES WHOM -->
                 <div class="lg:col-span-2">
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                         <h2 class="text-lg font-semibold text-slate-800 mb-5 flex items-center gap-2">
@@ -46,7 +45,6 @@
                             Qui doit à qui ?
                         </h2>
 
-                        <!-- Tableau récapitulatif des dettes croisées -->
                         <div class="space-y-4">
                             @foreach ($debts as $debt)
                                 <div
@@ -65,17 +63,14 @@
                                     </div>
                                 </div>
                             @endforeach
-                            <!-- note explicative -->
                             <p class="text-xs text-slate-400 mt-5 text-center border-t border-slate-100 pt-4">
                                 Les dettes sont calculées automatiquement en fonction des dépenses.
                             </p>
                         </div>
                     </div>
 
-                    <!-- RIGHT COLUMN: "ON ME DOIT" + actions pour marquer payé -->
                     <div class="lg:col-span-1 space-y-6">
 
-                        <!-- CARD: CE QUE L'ON ME DOIT (avec boutons) -->
                         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                             <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -86,7 +81,6 @@
                                 On me doit
                             </h2>
 
-                            <!-- Liste des personnes qui me doivent (avec montant et bouton "marquer payé") -->
                             <div class="space-y-4">
                                 @foreach ($debts as $debt)
                                     @if ($debt->fromUser->id === auth()->user()->id)
@@ -125,7 +119,6 @@
                             </div>
                         </div>
 
-                        <!-- petit rappel -->
                         <div
                             class="bg-indigo-50/50 rounded-xl border border-indigo-100 p-4 text-xs text-indigo-700 flex items-start gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
