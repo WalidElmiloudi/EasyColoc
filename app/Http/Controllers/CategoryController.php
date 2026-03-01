@@ -2,24 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreCategoryRequest;
 use App\Models\Category;
 
 class CategoryController extends Controller
 {
 
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+        $colocation = auth()->user()->colocation;
 
-        Category::create([
-            'colocation_id' => auth()->user()->colocation_id,
+        $colocation->categories()->create([
             'name' => $request->name,
         ]);
 
-        return back()->with('success', 'Category created!');
+        return back()->with('success', 'Category created successfully!');
     }
 
     public function destroy(Category $category)
