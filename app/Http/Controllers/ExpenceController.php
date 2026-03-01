@@ -25,7 +25,7 @@ class ExpenceController extends Controller
             $date = Carbon::createFromFormat('Y-m', $request->month);
 
             $query->whereYear('expense_date', $date->year)
-                  ->whereMonth('expense_date', $date->month);
+                ->whereMonth('expense_date', $date->month);
         }
 
         $expenses = $query->latest()->get();
@@ -34,15 +34,15 @@ class ExpenceController extends Controller
             ->select(
                 DB::raw("EXTRACT(YEAR FROM expense_date)::int as year"),
                 DB::raw("EXTRACT(MONTH FROM expense_date)::int as month")
-        )
-        ->distinct()
-        ->orderByDesc('year')
-        ->orderByDesc('month')
-        ->get();
+            )
+            ->distinct()
+            ->orderByDesc('year')
+            ->orderByDesc('month')
+            ->get();
 
         $total = $expenses->sum('amount');
 
-        return view('pages.expences', compact('expenses', 'categories', 'months','total'));
+        return view('pages.expences', compact('expenses', 'categories', 'months', 'total'));
     }
 
     public function store(Request $request)
@@ -65,5 +65,16 @@ class ExpenceController extends Controller
 
         return redirect()->route('expences.show')
             ->with('success', 'Expense added successfully!');
+    }
+
+    public function destroy(Expense $expense)
+    {
+        if ($expense->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $expense->delete();
+
+        return back()->with('success', 'Expense deleted successfully.');
     }
 }

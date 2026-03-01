@@ -51,7 +51,8 @@
                     </form>
                 </div>
                 <div class="flex gap-4 text-sm">
-                    <span class="text-slate-600">Total du mois : <span class="font-semibold text-indigo-600">{{$total}} MAD</span></span>
+                    <span class="text-slate-600">Total du mois : <span
+                            class="font-semibold text-indigo-600">{{ $total }} MAD</span></span>
                     <span class="text-slate-300 hidden sm:inline">|</span>
                     <span class="text-slate-600">Dépenses ({{ $expenses->count() }})</span>
                 </div>
@@ -59,28 +60,49 @@
 
             <!-- EXPENSES LIST (cards style) -->
             <div class="space-y-3">
-                @forelse ($expenses as $expense )
-                                <div
-                    class="bg-white rounded-xl border border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:shadow-sm transition">
-                    <div class="flex items-start gap-3">
-                        <div
-                            class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+                @forelse ($expenses as $expense)
+                    <div
+                        class="bg-white rounded-xl border border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:shadow-sm transition">
+
+                        <div class="flex items-start gap-3">
+                            <div
+                                class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
                             </div>
-                        <div>
-                            <p class="font-medium text-slate-800">{{ $expense->title }}</p>
-                            <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500 mt-1">
-                                <span class="flex items-center gap-1">{{ $expense->expense_date->format('d M Y') }}</span>
-                                <span class="flex items-center gap-1">{{ $expense->category->name }}</span>
-                                <span class="flex items-center gap-1">{{ $expense->user->name }}</span>
+
+                            <div>
+                                <p class="font-medium text-slate-800">{{ $expense->title }}</p>
+
+                                <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500 mt-1">
+                                    <span>{{ $expense->expense_date->format('d M Y') }}</span>
+                                    <span>{{ $expense->category->name }}</span>
+                                    <span>{{ $expense->user->name }}</span>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="flex items-center gap-4 pl-13 sm:pl-0">
+
+                            <span class="font-semibold text-lg text-slate-800">
+                                {{ $expense->amount }} MAD
+                            </span>
+
+                            {{-- Delete Button --}}
+                            @if ($expense->user_id === auth()->id())
+                                <form method="POST" action="{{ route('expenses.destroy', $expense) }}"
+                                    onsubmit="return confirm('Are you sure you want to delete this expense?');">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit" class="text-red-600 hover:text-red-700 text-sm font-medium">
+                                        Delete
+                                    </button>
+                                </form>
+                            @endif
+
+                        </div>
                     </div>
-                    <div class="flex items-center gap-4 pl-13 sm:pl-0">
-                        <span class="font-semibold text-lg text-slate-800">{{ $expense->amount }} MAD</span>
-                    </div>
-                </div>
                 @empty
-                <div class="text-center py-10 text-slate-400">Aucune dépense pour ce mois.</div>
+                    <div class="text-center py-10 text-slate-400">Aucune dépense pour ce mois.</div>
                 @endforelse
         </main>
 
@@ -92,8 +114,8 @@
                     <!-- header -->
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.8" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+                                stroke="currentColor" class="w-6 h-6 text-indigo-500">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
