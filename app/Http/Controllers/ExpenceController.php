@@ -7,6 +7,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Expense;
+use App\Models\Debt;
 
 class ExpenceController extends Controller
 {
@@ -47,24 +48,39 @@ class ExpenceController extends Controller
 
     public function store(Request $request)
     {
+        $user = auth()->user();
+        $colocation = $user->colocation;
+
         $request->validate([
             'title' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:0',
+            'amount' => 'required|numeric|min:0.01',
             'category_id' => 'required|exists:categories,id',
             'expense_date' => 'required|date',
         ]);
 
-        Expense::create([
-            'colocation_id' => auth()->user()->colocation_id,
-            'user_id' => auth()->id(),
-            'category_id' => $request->category_id,
+        $expense = Expense::create([
             'title' => $request->title,
             'amount' => $request->amount,
+            'user_id' => $user->id,
+            'colocation_id' => $colocation->id,
+            'category_id' => $request->category_id,
             'expense_date' => $request->expense_date,
         ]);
 
-        return redirect()->route('expences.show')
-            ->with('success', 'Expense added successfully!');
+        $members = $colocation->users()->where('id', '!=', $user->id)->get();
+        $share = $expense->amount / $colocation->users()->count();
+
+        foreach ($members as $member) {
+            Debt::create([
+                'expense_id' => $expense->id,
+                'from_user_id' => $member->id,
+                'to_user_id' => $user->id,
+                'colocation_id' => $colocation->id,
+                'amount' => $share,
+            ]);
+        }
+
+        return back()->with('success', 'Expense created and debts generated!');
     }
 
     public function destroy(Expense $expense)

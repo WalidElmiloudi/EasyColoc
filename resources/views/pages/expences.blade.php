@@ -65,10 +65,6 @@
                         class="bg-white rounded-xl border border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:shadow-sm transition">
 
                         <div class="flex items-start gap-3">
-                            <div
-                                class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
-                            </div>
-
                             <div>
                                 <p class="font-medium text-slate-800">{{ $expense->title }}</p>
 
@@ -93,7 +89,7 @@
                                     @csrf
                                     @method('DELETE')
 
-                                    <button type="submit" class="text-red-600 hover:text-red-700 text-sm font-medium">
+                                    <button type="submit" class="text-red-600 hover:text-red-700 text-sm font-medium cursor-pointer">
                                         Delete
                                     </button>
                                 </form>
