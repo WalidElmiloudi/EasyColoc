@@ -24,6 +24,7 @@ class User extends Authenticatable
         'role',
         'colocation_id',
         'colocation_role',
+        'status',
     ];
 
     /**

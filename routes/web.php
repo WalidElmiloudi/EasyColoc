@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ColocationController;
 use App\Http\Controllers\ExpenceController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DebtController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,6 +53,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/expences/{expense}', [ExpenceController::class, 'destroy'])->name('expenses.destroy');
     Route::get('/depts', [DebtController::class, 'show'])->name('debts.show');
     Route::patch('/debts/{debt}/pay', [DebtController::class, 'markAsPaid'])->name('debts.pay');
+});
+
+Route::middleware('auth')->group(function(){
+    Route::get('/admin',[AdminController::class,'show'])->name('admin.show');
+    Route::post('/admin/users/{user}/ban', [AdminController::class, 'toggleBan'])->name('admin.users.ban');
 });
 
 require __DIR__ . '/auth.php';
