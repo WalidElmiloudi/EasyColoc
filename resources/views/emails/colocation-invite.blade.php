@@ -4,6 +4,6 @@
 
 <p>Click here to accept the invitation:</p>
 
-<a href="{{ route('colocations.join', $invitation->token) }}">
+<a href="{{ route('invitations.accept', $invitation->token) }}">
     Join Colocation
 </a>

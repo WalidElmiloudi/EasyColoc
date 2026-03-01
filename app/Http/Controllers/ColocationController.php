@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use App\Models\User;
+use App\Models\Debt;
 use App\Mail\ColocationInvite;
 
 class ColocationController extends Controller
@@ -19,7 +20,7 @@ class ColocationController extends Controller
     {
         $members = $colocation->users;
         $categories = $colocation->categories;
-        return view('pages.colocation',compact('colocation','members','categories'));
+        return view('pages.colocation', compact('colocation', 'members', 'categories'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -27,7 +28,7 @@ class ColocationController extends Controller
         $request->validate([
             'name' => 'required|string|max:255'
         ]);
-        
+
         if (auth()->user()->colocation()->exists()) {
             return back()->withErrors('You are already in a colocation.');
         }
@@ -42,7 +43,7 @@ class ColocationController extends Controller
             'colocation_id' => $colocation->id,
             'colocation_role' => 'owner',
         ]);
-        return redirect()->route('colocations.show',$colocation);
+        return redirect()->route('colocations.show', $colocation);
     }
 
     public function joinWithInvitation($token)
@@ -151,5 +152,111 @@ class ColocationController extends Controller
             'colocation_id' => $colocationId,
             'colocation_role' => 'member',
         ]);
+    }
+
+    public function leave()
+    {
+        $user = auth()->user();
+
+        if (!$user->colocation_id) {
+            return back()->with('error', 'You are not in a colocation.');
+        }
+
+        if ($user->id === $user->colocation->owner_id) {
+            return back()->with('error', 'Owner must transfer ownership before leaving.');
+        }
+
+        $colocationId = $user->colocation_id;
+
+        $hasUnpaidDebts = Debt::where('colocation_id', $colocationId)
+            ->where(function ($query) use ($user) {
+                $query->where('from_user_id', $user->id)
+                    ->orWhere('to_user_id', $user->id);
+            })
+            ->where('is_paid', false)
+            ->exists();
+
+        if ($hasUnpaidDebts) {
+            $user->decrement('reputation');
+        } else {
+            $user->increment('reputation');
+        }
+
+        foreach ($user->expenses as $expense) {
+            $expense->debts()->delete();
+            $expense->delete();
+        }
+
+        $user->update([
+            'colocation_id' => null,
+            'colocation_role' => null
+        ]);
+
+        return redirect()->route('home')->with('success', 'You left the colocation.');
+    }
+
+    public function removeMember($memberId)
+    {
+        $member = User::findOrFail($memberId); // now $member is loaded from DB
+        $owner = auth()->user();
+        $colocation = $owner->colocation;
+
+        if ($owner->id !== $colocation->owner_id) {
+            abort(403, 'Only the owner can remove members.');
+        }
+
+        if ($member->id === $owner->id) {
+            return back()->with('error', 'Owner cannot remove themselves.');
+        }
+
+        DB::transaction(function () use ($colocation, $member, $owner) {
+            // reassign debts
+            Debt::where('colocation_id', $colocation->id)
+                ->where('is_paid', false)
+                ->where(function ($q) use ($member) {
+                    $q->where('from_user_id', $member->id)
+                        ->orWhere('to_user_id', $member->id);
+                })
+                ->get()
+                ->each(function ($debt) use ($member, $owner) {
+                    if ($debt->from_user_id === $member->id) $debt->from_user_id = $owner->id;
+                    if ($debt->to_user_id === $member->id) $debt->to_user_id = $owner->id;
+                    $debt->save();
+                });
+
+            // delete expenses
+            foreach ($member->expenses as $expense) {
+                $expense->debts()->delete();
+                $expense->delete();
+            }
+
+            // remove member from colocation
+            $member->update([
+                'colocation_id' => null,
+                'colocation_role' => null,
+            ]);
+        });
+
+        return back()->with('success', "{$member->name} has been removed and debts reassigned to the owner.");
+    }
+
+    public function transferOwnership(User $user)
+    {
+        $owner = auth()->user();
+        $colocation = $owner->colocation;
+
+        if ($owner->id !== $colocation->owner_id) {
+            abort(403, 'Only the owner can transfer ownership.');
+        }
+
+        if ($user->id === $owner->id) {
+            return back()->with('error', 'You are already the owner.');
+        }
+
+        $colocation->update(['owner_id' => $user->id]);
+        $user->update(['colocation_role' => 'owner']);
+        auth()->user()->update(['colocation_role' => 'member']);
+
+        return back()->with('success', "{$user->name} is now the owner of the colocation.");
     }
 }
